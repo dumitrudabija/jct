@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Jazz Chords Progression Trainer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Link to manifest -->
+  <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css?family=Atma&display=swap" rel="stylesheet">
+
+  <style>
+    /* Basic styling */
+    
+    body {
+  background: linear-gradient(to bottom, #629df0, #011128);
+  color: #FFD700;
+  font-family: 'Atma', cursive;
+}
+
+
+/* Optionally, update container text styling if needed */
+.container {
+  color: inherit; /* Inherit the yellow color */
+}
+
+  
+.container {
+  max-width: 600px;
+  margin: auto;
+  background: transparent; /* Remove the white background */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: none;       /* Optional: remove box shadow if not desired */
+  color: inherit;
+}
+
+    h1, h2 {
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    select, input[type="range"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+    #timerSpeedValue {
+      font-weight: bold;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 15px;
+      margin-right: 10px;
+      font-size: 16px;
+    }
+    #displayArea {
+      margin-top: 20px;
+      text-align: center;
+      border-top: 1px solid #ddd;
+      padding-top: 20px;
+    }
+    #chordDisplay {
+      font-size: 24px;
+      margin-top: 10px;
+    }
+    /* Progress bar styles */
+    #progressContainer {
+      width: 100%;
+      background: #ddd;
+      height: 10px;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 15px;
+    }
+    #progressBar {
+  width: 0%;
+  height: 100%;
+  background: #FFD700; /* A deep blue */
+  transition: width 0.1s linear;
+}
+
+    /* Next key display styling */
+    #nextKey {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #dcdcdc;
+    }
+    /* Base button styling */
+button {
+  border-radius: 25px; /* Makes the corners round */
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Start button styling */
+#startButton {
+  background-color: #FFC107;  /* Yellow background */
+  color: #0d47a1;             /* Dark blue text */
+}
+
+/* Stop button styling */
+#stopButton {
+  background-color: #FFC107;  /* Dark blue background */
+  color: #0d47a1;             /* Yellow text */
+}
+
+/* Hover effects */
+#startButton:hover {
+  background-color: #1565C0;  /* A lighter yellow on hover */
+}
+
+#stopButton:hover {
+  background-color: #1565C0;  /* A lighter blue on hover */
+}
+
+  </style>
+</head>
+<body>
+  
+  <div class="container">
+    <h1>Jazz Chords Progression Trainer</h1>
+    
+    <!-- Progression selection -->
+    <label for="progressionSelect">Choose a progression:</label>
+    <select id="progressionSelect">
+      <option value="IIm7 - V7 - I">IIm7 - V7 - I</option>
+      <option value="I - III7 - VI7 - IIm7 - V7">I - III7 - VI7 - IIm7 - V7</option>
+      <option value="I - VIm7 - IIm7 - V7">I - VIm7 - IIm7 - V7</option>
+      <option value="I - V+ - IIIø7 - VI7 - IVm6">I - V+ - IIIø7 - VI7 - IVm6</option>
+      <option value="I - Vm7 - I7 - IV - IVm7 - VIIb7 - I">I - Vm7 - I7 - IV - IVm7 - VIIb7 - I</option>
+      <option value="I - IV#m7 - VII7 - VIm7 - II7 - IIm7 - I7 - I">I - IV#m7 - VII7 - VIm7 - II7 - IIm7 - I7 - I</option>
+      <option value="IM7 - Im7 - IV7 - VIIbM7 - VIIbm7 - IIIb7">IM7 - Im7 - IV7 - VIIbM7 - VIIbm7 - IIIb7</option>
+      <option value="I - I#o7 - IIm7 - IIIbm7 - IIIm7 - VI7 - Vm7 - I7 - IVM7">I - I#o7 - IIm7 - IIIbm7 - IIIm7 - VI7 - Vm7 - I7 - IVM7</option>
+      <option value="I - III7 - VIM7 - I7 - IVM7 - VIIm7 - III7">I - III7 - VIM7 - I7 - IVM7 - VIIm7 - III7</option>
+      <option value="I - V7 - I - VIb7 - IVm - I - IVm - V7 - I">I - V7 - I - VIb7 - IVm - I - IVm - V7 - I</option>
+      <!-- Additional progressions (including ones with accidentals like "I - VIIb7") can be added here -->
+    </select>
+    
+    <!-- Cycle order selection -->
+    <label for="cycleOrder">Cycle Order:</label>
+    <select id="cycleOrder">
+      <option value="chromatic">Chromatic</option>
+      <option value="circle">Circle of Fifths</option>
+    </select>
+    
+    <!-- Timer speed slider -->
+    <label for="timerSpeed">Timer Speed (seconds):</label>
+    <input type="range" id="timerSpeed" min="2" max="25" value="5">
+    <span id="timerSpeedValue">5</span> s
+    
+    <!-- Control buttons -->
+    <div>
+      <button id="startButton">Start</button>
+      <button id="stopButton" disabled>Stop</button>
+    </div>
+    
+    <!-- Display area for current key, chords, progress bar, and next key -->
+    <div id="displayArea">
+      <h2 id="currentKey">Key: C</h2>
+      <div id="chordDisplay"></div>
+      <!-- Progress bar container -->
+      <div id="progressContainer">
+        <div id="progressBar"></div>
+      </div>
+      <!-- Next key display -->
+      <h3 id="nextKey">Next: C</h3>
+    </div>
+  </div>
+  
+  <script>
+    let intervalId = null;
+    let progressIntervalId = null;
+    let cycleStartTime = null;
+    // currentKeyIndex is preserved between cycles.
+    let currentKeyIndex = 0;
+    let currentTimerMs = 5000;
+    
+    // Updated key orders using flats where musically preferred.
+    const chromaticKeys = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+    // Circle of fifths cycling downward (descending fifths/ascending fourths):
+    const circleFifthsKeys = ["C", "F", "Bb", "Eb", "Ab", "Db", "Gb", "B", "E", "A", "D", "G"];
+    
+    // Define the proper major scales for each key.
+    const majorScales = {
+      "C":  ["C",  "D",  "E",  "F",  "G",  "A",  "B"],
+      "Db": ["Db", "Eb", "F",  "Gb", "Ab", "Bb", "C"],
+      "D":  ["D",  "E",  "F#", "G",  "A",  "B",  "C#"],
+      "Eb": ["Eb", "F",  "G",  "Ab", "Bb", "C",  "D"],
+      "E":  ["E",  "F#", "G#", "A",  "B",  "C#", "D#"],
+      "F":  ["F",  "G",  "A",  "Bb", "C",  "D",  "E"],
+      "Gb": ["Gb", "Ab", "Bb", "Cb", "Db", "Eb", "F"],
+      "G":  ["G",  "A",  "B",  "C",  "D",  "E",  "F#"],
+      "Ab": ["Ab", "Bb", "C",  "Db", "Eb", "F",  "G"],
+      "A":  ["A",  "B",  "C#", "D",  "E",  "F#", "G#"],
+      "Bb": ["Bb", "C",  "D",  "Eb", "F",  "G",  "A"],
+      "B":  ["B",  "C#", "D#", "E",  "F#", "G#", "A#"]
+    };
+    
+    // Converts a roman numeral (e.g., I, II, III) to a scale degree (1-based).
+    function romanToDegree(roman) {
+      const numeral = roman.toUpperCase();
+      const romanMap = {
+        "I": 1, "II": 2, "III": 3, "IV": 4,
+        "V": 5, "VI": 6, "VII": 7
+      };
+      return romanMap[numeral] || null;
+    }
+    
+    // Applies a single accidental to a note.
+    // For flat ('b'): if note contains "#", remove it; if natural, add "b"; if already flat, add an extra "b".
+    // For sharp ('#'): if note contains "b", remove it; if natural, add "#"; if already sharp, append "x".
+    function applyAccidental(note, accidentalChar) {
+      if (accidentalChar === "b") {
+        if (note.indexOf("#") !== -1) {
+          return note.replace("#", "");
+        } else if (note.indexOf("b") !== -1) {
+          return note + "b";
+        } else {
+          return note + "b";
+        }
+      } else if (accidentalChar === "#") {
+        if (note.indexOf("b") !== -1) {
+          return note.replace("b", "");
+        } else if (note.indexOf("#") !== -1) {
+          return note + "x";
+        } else {
+          return note + "#";
+        }
+      }
+      return note;
+    }
+    
+    // Given a chord string (e.g., "VIIb7" or "IV#maj7"), returns the chord name using the proper scale.
+    function getChordName(chordStr, scale) {
+      // The regex splits the chord into three parts:
+      //   1. Roman numeral (e.g., "VII")
+      //   2. Any accidental modifiers (e.g., "b", "#", "bb", "##", etc.)
+      //   3. The remaining suffix (e.g., "7", "m7", etc.)
+      let match = chordStr.trim().match(/^([ivIV]+)([b#]*)(.*)$/);
+      if (match) {
+        let numeralPart = match[1];
+        let accidentalModifiers = match[2];
+        let suffix = match[3];
+        let degree = romanToDegree(numeralPart);
+        if (degree && degree >= 1 && degree <= 7) {
+          // Start with the base note from the scale.
+          let note = scale[degree - 1];
+          // Apply each accidental modifier in order.
+          for (let i = 0; i < accidentalModifiers.length; i++) {
+            note = applyAccidental(note, accidentalModifiers.charAt(i));
+          }
+          return note + suffix;
+        }
+      }
+      return chordStr;
+    }
+    
+    // Updates the display area: current key, chord progression, and next key.
+    function updateDisplay() {
+      const key = keysOrder[currentKeyIndex];
+      document.getElementById("currentKey").innerText = "Key: " + key;
+      // Look up the proper scale for the current key.
+      const scale = majorScales[key];
+      const progressionStr = document.getElementById("progressionSelect").value;
+      const chords = progressionStr.split("-");
+      const chordNames = chords.map(chord => getChordName(chord, scale));
+      document.getElementById("chordDisplay").innerText = chordNames.join("   ");
+      updateNextKey();
+    }
+    
+    // Updates the "Next" key display.
+    function updateNextKey() {
+      const nextKey = keysOrder[(currentKeyIndex + 1) % keysOrder.length];
+      document.getElementById("nextKey").innerText = "Next: " + nextKey;
+    }
+    
+    // Updates the progress bar based on elapsed time.
+    function updateProgressBar() {
+      const elapsed = Date.now() - cycleStartTime;
+      let progressPercent = Math.min((elapsed / currentTimerMs) * 100, 100);
+      document.getElementById("progressBar").style.width = progressPercent + "%";
+    }
+    
+    // Starts the key cycle without resetting currentKeyIndex.
+    function startCycle() {
+      document.getElementById("startButton").disabled = true;
+      document.getElementById("stopButton").disabled = false;
+      
+      // Update keysOrder based on the selected cycle order.
+      const orderSelect = document.getElementById("cycleOrder").value;
+      let newOrder = (orderSelect === "circle") ? circleFifthsKeys.slice() : chromaticKeys.slice();
+      // Preserve current key if possible.
+      let currentDisplayedKey = document.getElementById("currentKey").innerText.replace("Key: ", "").trim();
+      let newIndex = newOrder.indexOf(currentDisplayedKey);
+      if(newIndex !== -1) {
+        currentKeyIndex = newIndex;
+      }
+      keysOrder = newOrder;
+      updateDisplay();
+      
+      // Update currentTimerMs from the timer slider.
+      const timerSeconds = parseInt(document.getElementById("timerSpeed").value, 10);
+      currentTimerMs = timerSeconds * 1000;
+      cycleStartTime = Date.now();
+      
+      if (progressIntervalId) clearInterval(progressIntervalId);
+      progressIntervalId = setInterval(updateProgressBar, 50);
+      
+      // Start or restart the interval with the new timer.
+      if (intervalId) clearInterval(intervalId);
+      intervalId = setInterval(() => {
+        currentKeyIndex = (currentKeyIndex + 1) % keysOrder.length;
+        updateDisplay();
+        cycleStartTime = Date.now();
+      }, currentTimerMs);
+    }
+    
+    // Stops cycling without resetting the current key.
+    function stopCycle() {
+      clearInterval(intervalId);
+      clearInterval(progressIntervalId);
+      intervalId = null;
+      progressIntervalId = null;
+      document.getElementById("startButton").disabled = false;
+      document.getElementById("stopButton").disabled = true;
+      document.getElementById("progressBar").style.width = "0%";
+    }
+    
+    // Event listener for the timer slider. Reflects changes in real time.
+    document.getElementById("timerSpeed").addEventListener("input", function() {
+      const newValue = this.value;
+      document.getElementById("timerSpeedValue").innerText = newValue;
+      // If the cycle is running, update the timer interval.
+      if (intervalId) {
+        currentTimerMs = parseInt(newValue, 10) * 1000;
+        clearInterval(intervalId);
+        cycleStartTime = Date.now();
+        intervalId = setInterval(() => {
+          currentKeyIndex = (currentKeyIndex + 1) % keysOrder.length;
+          updateDisplay();
+          cycleStartTime = Date.now();
+        }, currentTimerMs);
+      }
+    });
+    
+    // Other event listeners.
+    document.getElementById("startButton").addEventListener("click", startCycle);
+    document.getElementById("stopButton").addEventListener("click", stopCycle);
+    document.getElementById("progressionSelect").addEventListener("change", updateDisplay);
+    document.getElementById("cycleOrder").addEventListener("change", function() {
+      let newOrder = (this.value === "circle") ? circleFifthsKeys.slice() : chromaticKeys.slice();
+      let currentDisplayedKey = document.getElementById("currentKey").innerText.replace("Key: ", "").trim();
+      let newIndex = newOrder.indexOf(currentDisplayedKey);
+      if(newIndex === -1) newIndex = 0;
+      keysOrder = newOrder;
+      currentKeyIndex = newIndex;
+      updateDisplay();
+    });
+    
+    // Initialize keysOrder with the default chromatic order.
+    let keysOrder = chromaticKeys.slice();
+    updateDisplay();
+  </script>
+  
+  <!-- Service Worker Registration for PWA functionality -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('service-worker.js').then(function(registration) {
+          console.log('ServiceWorker registered with scope:', registration.scope);
+        }, function(err) {
+          console.log('ServiceWorker registration failed:', err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
